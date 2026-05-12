@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
-from app.middleware.jwt_middleware import get_current_user
+# Importamos require_admin en lugar de get_current_user
+from app.middleware.role_middleware import require_admin
 from app.schemas.database_schema import (
     CreateDatabaseSchema,
     DeleteDatabaseSchema
@@ -15,33 +16,33 @@ router = APIRouter(
     tags=["Database"]
 )
 
-# Crear base de datos
+# Crear base de datos (Requiere Admin)
 @router.post("/create")
 def create_new_database(
     data: CreateDatabaseSchema,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(require_admin)
 ):
     return create_database(
         db_name=data.db_name,
-        owner_id=current_user["id"]
+        user_id=current_user["id"]  # <-- CAMBIO AQUI
     )
 
-# Listar bases de datos
+# Listar bases de datos (Requiere Admin)
 @router.get("/list")
 def get_databases(
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(require_admin)
 ):
     return list_databases(
-        owner_id=current_user["id"]
+        user_id=current_user["id"]  # <-- CAMBIO AQUI
     )
 
-# Eliminar base de datos
+# Eliminar base de datos (Requiere Admin)
 @router.delete("/delete")
 def remove_database(
     data: DeleteDatabaseSchema,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(require_admin)
 ):
     return delete_database(
         db_name=data.db_name,
-        owner_id=current_user["id"]
+        user_id=current_user["id"]  # <-- CAMBIO AQUI
     )
