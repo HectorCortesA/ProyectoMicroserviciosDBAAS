@@ -5,3 +5,8 @@ class CreateDatabaseSchema(BaseModel):
 
 class DeleteDatabaseSchema(BaseModel):
     db_name: str
+
+class AssignAccessSchema(BaseModel):
+    db_name: str
+    target_email: str
+    role: str

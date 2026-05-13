@@ -16,7 +16,7 @@ router = APIRouter(prefix="/document", tags=["Documents"])
 @router.post("/insert")
 def insert_new_document(
     data: InsertDocumentSchema,
-    current_user: dict = Depends(require_write) # <--- CAMBIO AQUÍ
+    current_user: dict = Depends(require_write)
 ):
     return insert_document(
         db_name=data.db_name,
@@ -30,7 +30,7 @@ def insert_new_document(
 def get_documents(
     db_name: str,
     collection_name: str,
-    current_user: dict = Depends(require_read) # <--- CAMBIO AQUÍ
+    current_user: dict = Depends(require_read)
 ):
     return find_documents(
         db_name=db_name, collection_name=collection_name, owner_id=current_user["id"]
@@ -42,7 +42,14 @@ def update_existing_document(
     data: UpdateDocumentSchema,
     current_user: dict = Depends(require_write)
 ):
-    return update_document(...)
+    # Se cambian los "..." por los parámetros reales
+    return update_document(
+        db_name=data.db_name,
+        collection_name=data.collection_name,
+        filter_query=data.filter_query,
+        new_data=data.new_data,
+        owner_id=current_user["id"]
+    )
 
 # Eliminar (Requiere Escritura)
 @router.delete("/delete")
@@ -50,4 +57,10 @@ def remove_document(
     data: DeleteDocumentSchema,
     current_user: dict = Depends(require_write)
 ):
-    return delete_document(...)
+    # Se cambian los "..." por los parámetros reales
+    return delete_document(
+        db_name=data.db_name,
+        collection_name=data.collection_name,
+        filter_query=data.filter_query,
+        owner_id=current_user["id"]
+    )
